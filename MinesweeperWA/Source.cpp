@@ -49,9 +49,19 @@ WNDCLASS CreateWindowClass(HBRUSH color, HCURSOR cursor, HINSTANCE hInst, HICON 
 
 LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+	int result = 0;
 
 	switch (msg)
 	{
+	case WM_COMMAND:
+		switch (wparam)
+		{
+		case Exit:
+			result = MessageBox(hwnd, L"Are you sure you want to exit the game?", L"Exit", MB_YESNO);
+			if (result == YES) PostQuitMessage(0);
+			break;
+		}
+		break;
 	case WM_CREATE:
 		AddMainWindowMenu(hwnd);
 		AddMainWindowWidgets(hwnd);
@@ -75,10 +85,12 @@ void AddMainWindowWidgets(HWND hwnd)
 {
 
 	StartGame = CreateWindowA("button", "Start", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Start, NULL, NULL);
+	ExitGame = CreateWindowA("button", "Exit", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 8, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Exit, NULL, NULL);
 
 }
 
 void ShowMainMenuWidgets()
 {
 	ShowWindow(StartGame, SW_SHOW);
+	ShowWindow(ExitGame, SW_SHOW);
 }

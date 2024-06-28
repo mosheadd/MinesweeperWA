@@ -3,6 +3,8 @@
 
 #define Start 1
 #define Exit 2
+#define YES IDYES
+#define NO IDNO
 
 //Widgets
 
