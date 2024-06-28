@@ -53,6 +53,9 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 	switch (msg)
 	{
 	case WM_CREATE:
+		AddMainWindowMenu(hwnd);
+		AddMainWindowWidgets(hwnd);
+		ShowMainMenuWidgets();
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -61,4 +64,21 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		return DefWindowProc(hwnd, msg, wparam, lparam);
 	}
 
+}
+
+void AddMainWindowMenu(HWND hwnd)
+{
+
+}
+
+void AddMainWindowWidgets(HWND hwnd)
+{
+
+	StartGame = CreateWindowA("button", "Start", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Start, NULL, NULL);
+
+}
+
+void ShowMainMenuWidgets()
+{
+	ShowWindow(StartGame, SW_SHOW);
 }
