@@ -31,8 +31,9 @@ namespace mswa
 		~Map();
 
 		void makeRoad(short row, short col);
-		void getMinesCount();
 		void gameloop();
+
+		short getMinesCount(short row, short col);
 
 		bool checkWinCondition();
 
