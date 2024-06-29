@@ -3,6 +3,7 @@
 
 #define Start 1
 #define Exit 2
+#define Settings 3
 #define YES IDYES
 #define NO IDNO
 
@@ -11,6 +12,7 @@
 //Main menu
 HWND StartGame;
 HWND ExitGame;
+HWND GameSettings;
 
 
 LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);

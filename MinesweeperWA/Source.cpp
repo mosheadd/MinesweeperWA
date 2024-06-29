@@ -85,12 +85,14 @@ void AddMainWindowWidgets(HWND hwnd)
 {
 
 	StartGame = CreateWindowA("button", "Start", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Start, NULL, NULL);
-	ExitGame = CreateWindowA("button", "Exit", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 8, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Exit, NULL, NULL);
+	GameSettings = CreateWindowA("button", "Settings", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 8, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Settings, NULL, NULL);
+	ExitGame = CreateWindowA("button", "Exit", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 2, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Exit, NULL, NULL);
 
 }
 
 void ShowMainMenuWidgets()
 {
 	ShowWindow(StartGame, SW_SHOW);
+	ShowWindow(GameSettings, SW_SHOW);
 	ShowWindow(ExitGame, SW_SHOW);
 }
