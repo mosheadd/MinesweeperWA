@@ -1,10 +1,13 @@
 #include <Windows.h>
 #include <Winuser.h>
 #include <gdiplus.h>
+#include <string>
 
 #include "MainClassPrototypes.h"
 #include "mswa.h"
 #pragma comment(lib,"gdiplus.lib")
+
+mswa::Map map;
 
 enum MainWindowParams {
 	X = 630,
@@ -61,6 +64,9 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 {
 	int result = 0;
 
+	short mapHeight;
+	short mapWidth;
+
 	HDC hdc;
 	PAINTSTRUCT ps;
 
@@ -86,17 +92,30 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
-		for (int i = 0; i < 10; i++)
+		mapHeight = map.getSize().height;
+		mapWidth = map.getSize().width;
+		for (int i = 0; i < mapHeight; i++)
 		{
-			for (int j = 0; j < 10; j++)
+			for (int j = 0; j < mapWidth; j++)
 			{
-				drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
+				short cell = map.getCell(i, j);
+				switch(cell)
+				{
+				default: drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
+				};
 			}
 		}
 		EndPaint(hwnd, &ps);
 		break;
 	case WM_LBUTTONUP:
+		POINT p;
+		GetCursorPos(&p);
+		if (ScreenToClient(hwnd, &p))
+		{
 
+
+			SetWindowTextW(forTests, std::to_wstring(p.x).c_str());
+		}
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -118,7 +137,7 @@ void AddMainWindowWidgets(HWND hwnd)
 	StartGame = CreateWindowA("button", "Start", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Start, NULL, NULL);
 	GameSettings = CreateWindowA("button", "Settings", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 8, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Settings, NULL, NULL);
 	ExitGame = CreateWindowA("button", "Exit", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 2, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Exit, NULL, NULL);
-	//forTests = CreateWindowA("static", "a", WS_CHILD | WS_VISIBLE, 0, 0, 10, 10, hwnd, NULL, NULL, NULL);
+	forTests = CreateWindowA("static", "a", WS_CHILD | WS_VISIBLE, WIDTH - 55, HEIGHT - 60, 25, 20, hwnd, NULL, NULL, NULL);
 
 }
 

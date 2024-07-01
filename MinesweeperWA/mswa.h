@@ -2,6 +2,12 @@
 #include <Windows.h>
 #include <vector>
 
+#define Start 1
+#define Exit 2
+#define Settings 3
+#define YES IDYES
+#define NO IDNO
+
 namespace mswa
 {
 	constexpr auto UNCOVER = 1;
@@ -23,6 +29,14 @@ namespace mswa
 			MINE = 3,
 			FLAGGED_MINE = 4,
 		};
+		
+		void init();
+
+		struct Size {
+			short height, width;
+
+			Size(short height, short width) : height(height), width(width){}
+		};
 
 	public:
 		Map();
@@ -34,8 +48,11 @@ namespace mswa
 		void gameloop();
 
 		short getMinesCount(short row, short col);
+		short getCell(short row, short col);
 
 		bool checkWinCondition();
+
+		Size getSize();
 
 	};
 

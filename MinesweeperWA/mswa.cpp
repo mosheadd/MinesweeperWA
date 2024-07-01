@@ -9,12 +9,14 @@ mswa::Map::Map()
 {
 	height = 10;
 	width = 10;
+	init();
 }
 
 mswa::Map::Map(short height, short width)
 {
 	this->height = height;
 	this->width = width;
+	init();
 }
 
 mswa::Map::~Map()
@@ -97,6 +99,11 @@ short mswa::Map::getMinesCount(short row, short col)
 
 }
 
+short mswa::Map::getCell(short row, short col)
+{
+	return map[row][col];
+}
+
 void mswa::Map::gameloop()
 {
 }
@@ -113,4 +120,20 @@ bool mswa::Map::checkWinCondition()
 	}
 
 	return true;
+}
+
+void mswa::Map::init()
+{
+	for (short i = 0; i < height; i++)
+	{
+		map.push_back({});
+		for (short j = 0; j < width; j++)
+			map[i].push_back(COVERED);
+	}
+}
+
+mswa::Map::Size mswa::Map::getSize()
+{
+	Size size = { height, width };
+	return size;
 }
