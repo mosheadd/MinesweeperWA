@@ -1,7 +1,10 @@
 #include <Windows.h>
 #include <Winuser.h>
+#include <gdiplus.h>
 
 #include "MainClassPrototypes.h"
+#include "mswa.h"
+#pragma comment(lib,"gdiplus.lib")
 
 enum MainWindowParams {
 	X = 630,
@@ -12,6 +15,12 @@ enum MainWindowParams {
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdshow)
 {
+
+	hasGameStarted = false;
+
+	Gdiplus::GdiplusStartupInput gdiStartIn;
+	ULONG_PTR gdiToken;
+	Gdiplus::GdiplusStartup(&gdiToken, &gdiStartIn, nullptr);
 
 	WNDCLASS MainClass = CreateWindowClass((HBRUSH)COLOR_WINDOW, LoadCursor(NULL, IDC_ARROW), hInst, LoadIcon(hInst, IDI_EXCLAMATION),
 		L"MainWindow", MainClassProcedure);
@@ -29,6 +38,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 		DispatchMessageW(&MainMessage);
 	}
 
+	Gdiplus::GdiplusShutdown(gdiToken);
 	return 0;
 }
 
@@ -51,11 +61,18 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 {
 	int result = 0;
 
+	HDC hdc;
+	PAINTSTRUCT ps;
+
 	switch (msg)
 	{
 	case WM_COMMAND:
 		switch (wparam)
 		{
+		case Start:
+			hasGameStarted = true;
+			HideMainMenuWidgets();
+			break;
 		case Exit:
 			result = MessageBox(hwnd, L"Are you sure you want to exit the game?", L"Exit", MB_YESNO);
 			if (result == YES) PostQuitMessage(0);
@@ -65,7 +82,21 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 	case WM_CREATE:
 		AddMainWindowMenu(hwnd);
 		AddMainWindowWidgets(hwnd);
-		ShowMainMenuWidgets();
+		//ShowMainMenuWidgets();
+		break;
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
+			}
+		}
+		EndPaint(hwnd, &ps);
+		break;
+	case WM_LBUTTONUP:
+
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -87,6 +118,7 @@ void AddMainWindowWidgets(HWND hwnd)
 	StartGame = CreateWindowA("button", "Start", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Start, NULL, NULL);
 	GameSettings = CreateWindowA("button", "Settings", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 8, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Settings, NULL, NULL);
 	ExitGame = CreateWindowA("button", "Exit", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 2, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Exit, NULL, NULL);
+	//forTests = CreateWindowA("static", "a", WS_CHILD | WS_VISIBLE, 0, 0, 10, 10, hwnd, NULL, NULL, NULL);
 
 }
 
@@ -96,3 +128,21 @@ void ShowMainMenuWidgets()
 	ShowWindow(GameSettings, SW_SHOW);
 	ShowWindow(ExitGame, SW_SHOW);
 }
+
+void HideMainMenuWidgets()
+{
+	ShowWindow(StartGame, SW_HIDE);
+	ShowWindow(GameSettings, SW_HIDE);
+	ShowWindow(ExitGame, SW_HIDE);
+}
+
+void drawImage(LPCWSTR filepath, HDC hdc, INT x, INT y)
+{
+
+	Gdiplus::Graphics graphics(hdc);
+	
+	Gdiplus::Bitmap img(filepath);
+	graphics.DrawImage(&img, x, y);
+
+}
+

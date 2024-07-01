@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <gdiplus.h>
 
 #define Start 1
 #define Exit 2
@@ -14,6 +15,10 @@ HWND StartGame;
 HWND ExitGame;
 HWND GameSettings;
 
+HWND forTests;
+
+bool hasGameStarted;
+
 
 LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -22,3 +27,5 @@ WNDCLASS CreateWindowClass(HBRUSH color, HCURSOR cursor, HINSTANCE hInst, HICON 
 void AddMainWindowMenu(HWND hwnd);
 void AddMainWindowWidgets(HWND hwnd);
 void ShowMainMenuWidgets();
+void HideMainMenuWidgets();
+void drawImage(LPCWSTR filepath, HDC hdc, INT x, INT y);
