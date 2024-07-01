@@ -89,8 +89,8 @@ short mswa::Map::getMinesCount(short row, short col)
 	{
 		short coeff1 = (row == 0) - (row == 9);
 		short coeff2 = (col == 0) - (col == 9);
-		mines_count += map[row + coeff1][col + coeff2] == MINE + map[row][col + coeff2] == MINE + map[row + coeff1][col] == MINE;
-		mines_count += map[row + coeff1][col + coeff2] == FLAGGED_MINE + map[row][col + coeff2] == FLAGGED_MINE + map[row + coeff1][col] == FLAGGED_MINE;
+		mines_count += (map[row + coeff1][col + coeff2] == MINE) + (map[row][col + coeff2] == MINE) + (map[row + coeff1][col] == MINE);
+		mines_count += (map[row + coeff1][col + coeff2] == FLAGGED_MINE) + (map[row][col + coeff2] == FLAGGED_MINE) + (map[row + coeff1][col] == FLAGGED_MINE);
 	}
 
 	return mines_count;
@@ -114,5 +114,3 @@ bool mswa::Map::checkWinCondition()
 
 	return true;
 }
-
-
