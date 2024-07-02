@@ -110,6 +110,8 @@ bool mswa::Map::action(int x, int y, bool toflag)
 	short row = y / 32;
 	short col = x / 32;
 
+	if (row > height || col > width) return 1;
+
 	if (toflag)
 	{
 		switch (map[row][col])
