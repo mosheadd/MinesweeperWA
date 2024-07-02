@@ -6,6 +6,10 @@
 #define Start 1
 #define Exit 2
 #define Settings 3
+#define ChooseEasy 4
+#define ChooseMedium 5
+#define ChooseHard 6
+#define Back 7
 #define YES IDYES
 #define NO IDNO
 
@@ -15,6 +19,13 @@
 HWND StartGame;
 HWND ExitGame;
 HWND GameSettings;
+
+//Difficulties
+HWND Easy;
+HWND Medium;
+HWND Hard;
+
+HWND BackButton;
 
 HWND forTests;
 
@@ -31,4 +42,6 @@ void AddMainWindowMenu(HWND hwnd);
 void AddMainWindowWidgets(HWND hwnd);
 void ShowMainMenuWidgets();
 void HideMainMenuWidgets();
+void ShowDifficultiesWidgets();
+void HideDifficultiesWidgets();
 void drawImage(LPCWSTR filepath, HDC hdc, INT x, INT y);

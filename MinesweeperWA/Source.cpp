@@ -13,8 +13,8 @@ mswa::Map map;
 enum MainWindowParams {
 	X = 630,
 	Y = 300,
-	HEIGHT = 500,
-	WIDTH = 500
+	HEIGHT = 640,
+	WIDTH = 640
 };
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdshow)
@@ -79,9 +79,30 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		switch (wparam)
 		{
 		case Start:
-			hasGameStarted = true;
 			HideMainMenuWidgets();
+			ShowDifficultiesWidgets();
+			break;
+		case Back:
+			ShowMainMenuWidgets();
+			HideDifficultiesWidgets();
+			break;
+		case ChooseEasy:
+			map = mswa::Map(5, 5);
+			HideDifficultiesWidgets();
 			InvalidateRect(hwnd, NULL, FALSE);
+			hasGameStarted = true;
+			break;
+		case ChooseMedium:
+			map = mswa::Map(10, 10);
+			HideDifficultiesWidgets();
+			InvalidateRect(hwnd, NULL, FALSE);
+			hasGameStarted = true;
+			break;
+		case ChooseHard:
+			map = mswa::Map(15, 15);
+			HideDifficultiesWidgets();
+			InvalidateRect(hwnd, NULL, FALSE);
+			hasGameStarted = true;
 			break;
 		case Exit:
 			result = MessageBox(hwnd, L"Are you sure you want to exit the game?", L"Exit", MB_YESNO);
@@ -203,7 +224,14 @@ void AddMainWindowWidgets(HWND hwnd)
 	StartGame = CreateWindowA("button", "Start", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Start, NULL, NULL);
 	GameSettings = CreateWindowA("button", "Settings", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 8, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Settings, NULL, NULL);
 	ExitGame = CreateWindowA("button", "Exit", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 2, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Exit, NULL, NULL);
-	forTests = CreateWindowA("static", "", WS_CHILD | WS_VISIBLE, 330, 330, 200, 200, hwnd, NULL, NULL, NULL);
+
+	Easy = CreateWindowA("button", "Easy", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)ChooseEasy, NULL, NULL);
+	Medium = CreateWindowA("button", "Medium", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 8, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)ChooseMedium, NULL, NULL);
+	Hard = CreateWindowA("button", "Hard", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 2, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)ChooseHard, NULL, NULL);
+
+	BackButton = CreateWindowA("button", "Back", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Back, NULL, NULL);
+
+	forTests = CreateWindowA("static", "", WS_CHILD, 640, 640, 1, 1, hwnd, NULL, NULL, NULL);
 
 }
 
@@ -219,6 +247,22 @@ void HideMainMenuWidgets()
 	ShowWindow(StartGame, SW_HIDE);
 	ShowWindow(GameSettings, SW_HIDE);
 	ShowWindow(ExitGame, SW_HIDE);
+}
+
+void ShowDifficultiesWidgets()
+{
+	ShowWindow(Easy, SW_SHOW);
+	ShowWindow(Medium, SW_SHOW);
+	ShowWindow(Hard, SW_SHOW);
+	ShowWindow(BackButton, SW_SHOW);
+}
+
+void HideDifficultiesWidgets()
+{
+	ShowWindow(Easy, SW_HIDE);
+	ShowWindow(Medium, SW_HIDE);
+	ShowWindow(Hard, SW_HIDE);
+	ShowWindow(BackButton, SW_HIDE);
 }
 
 void drawImage(LPCWSTR filepath, HDC hdc, INT x, INT y)
