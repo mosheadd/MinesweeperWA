@@ -2,7 +2,7 @@
 
 int mswa::getNumberInRange(int min_val, int max_val)
 {
-	return min_val + rand() % max_val;
+	return min_val + (rand() % (max_val - min_val + 1));
 }
 
 mswa::Map::Map()
@@ -178,18 +178,20 @@ void mswa::Map::initMines(int x, int y)
 	short row = y / 32;
 	short col = x / 32;
 
-	for (short i = 0; i < height; i++)
+	short totalMinesOnMap = getNumberInRange(height * width / 5, 3 * height * width / 5);
+	short mineRow = row;
+	short mineCol = col;
+
+	for (short i = 0; i < totalMinesOnMap; i++)
 	{
-		for (short j = 0; j < width; j++)
-		{
-			if (row != i || col != j)
-			{
-				int rn = getNumberInRange(1, 100);
-				if (rn < 10)
-					map[i][j] = MINE;
-			}
+		while (mineRow == row && mineCol == col || map[mineRow][mineCol] == MINE)
+		{	
+			mineRow = getNumberInRange(0, height - 1);
+			mineCol = getNumberInRange(0, width - 1);
 		}
+		map[mineRow][mineCol] = MINE;
 	}
+
 }
 
 mswa::Map::Size mswa::Map::getSize()
