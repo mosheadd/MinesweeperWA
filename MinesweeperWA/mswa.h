@@ -45,11 +45,11 @@ namespace mswa
 		~Map();
 
 		void makeRoad(short row, short col);
-		void gameloop();
 
 		short getMinesCount(short row, short col);
 		short getCell(short row, short col);
 
+		bool action(int x, int y, bool toflag = false);
 		bool checkWinCondition();
 
 		Size getSize();

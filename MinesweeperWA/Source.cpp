@@ -113,6 +113,18 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		if (ScreenToClient(hwnd, &p))
 		{
 
+			map.action(p.x, p.y);
+
+			SetWindowTextW(forTests, std::to_wstring(p.x).c_str());
+		}
+		break;
+	case WM_RBUTTONUP:
+		POINT p;
+		GetCursorPos(&p);
+		if (ScreenToClient(hwnd, &p))
+		{
+
+			map.action(p.x, p.y, true);
 
 			SetWindowTextW(forTests, std::to_wstring(p.x).c_str());
 		}

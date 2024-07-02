@@ -26,7 +26,7 @@ mswa::Map::~Map()
 void mswa::Map::makeRoad(short row, short col)
 {
 
-	if (row < 0 || row > 9 || col < 0 || col > 9 || map[row][col] == UNCOVERED || map[row][col] == MINE || map[row][col] == FLAGGED_MINE) return;
+	if (row < 0 || row >= height || col < 0 || col >= width || map[row][col] == UNCOVERED || map[row][col] == MINE || map[row][col] == FLAGGED_MINE) return;
 
 	int cell_mines_count = getMinesCount(row, col);
 
@@ -50,13 +50,13 @@ short mswa::Map::getMinesCount(short row, short col)
 
 	int mines_count = 0;
 
-	if (row >= 1 && row <= 8 && col >= 1 && col <= 8)
+	if (row >= 1 && row <= height - 2 && col >= 1 && col <= width - 2)
 	{
 		for (int t = row - 1; t < row + 2; t++)
 			for (int k = col - 1; k < col + 2; k++)
 				mines_count += map[t][k] == MINE || map[t][k] == FLAGGED_MINE;
 	}
-	else if (col >= 1 && col <= 8)
+	else if (col >= 1 && col <= width - 2)
 	{
 
 		if (row == 0)
@@ -72,7 +72,7 @@ short mswa::Map::getMinesCount(short row, short col)
 					mines_count += map[t][k] == MINE || map[t][k] == FLAGGED_MINE;
 		}
 	}
-	else if (row >= 1 && row <= 8)
+	else if (row >= 1 && row <= width - 2)
 	{
 		if (col == 0)
 		{
@@ -89,8 +89,8 @@ short mswa::Map::getMinesCount(short row, short col)
 	}
 	else
 	{
-		short coeff1 = (row == 0) - (row == 9);
-		short coeff2 = (col == 0) - (col == 9);
+		short coeff1 = (row == 0) - (row == height - 1);
+		short coeff2 = (col == 0) - (col == width - 1);
 		mines_count += (map[row + coeff1][col + coeff2] == MINE) + (map[row][col + coeff2] == MINE) + (map[row + coeff1][col] == MINE);
 		mines_count += (map[row + coeff1][col + coeff2] == FLAGGED_MINE) + (map[row][col + coeff2] == FLAGGED_MINE) + (map[row + coeff1][col] == FLAGGED_MINE);
 	}
@@ -104,8 +104,43 @@ short mswa::Map::getCell(short row, short col)
 	return map[row][col];
 }
 
-void mswa::Map::gameloop()
+bool mswa::Map::action(int x, int y, bool toflag)
 {
+
+	short row = y / 32;
+	short col = x / 32;
+
+	if (toflag)
+	{
+		switch (map[row][col])
+		{
+		case UNCOVERED:
+			map[row][col] = FLAGGED;
+			break;
+		case FLAGGED:
+			map[row][col] = UNCOVERED;
+			break;
+		case MINE:
+			map[row][col] = FLAGGED_MINE;
+			break;
+		case FLAGGED_MINE:
+			map[row][col] = MINE;
+			break;
+		}
+	}
+	else
+	{
+		if (map[row][col] == MINE || map[row][col] == FLAGGED_MINE)
+		{
+			return 0;
+		}
+		else
+		{
+			makeRoad(row, col);
+			return 1;
+		}
+	}
+
 }
 
 bool mswa::Map::checkWinCondition()
