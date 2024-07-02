@@ -20,6 +20,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 {
 
 	hasGameStarted = false;
+	firstMoveDone = false;
 
 	Gdiplus::GdiplusStartupInput gdiStartIn;
 	ULONG_PTR gdiToken;
@@ -69,6 +70,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 
 	HDC hdc;
 	PAINTSTRUCT ps;
+	POINT p;
 
 	switch (msg)
 	{
@@ -128,18 +130,27 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		EndPaint(hwnd, &ps);
 		break;
 	case WM_LBUTTONUP:
-		POINT p;
 		GetCursorPos(&p);
 		if (ScreenToClient(hwnd, &p))
 		{
 
-			map.action(p.x, p.y);
+			if (!firstMoveDone)
+			{
+				firstMoveDone = true;
+				map.initMines(p.x, p.y);
+			}
+
+			if (!map.action(p.x, p.y))
+			{
+				result = MessageBox(hwnd, L"You lost", L"Game lost", MB_OK);
+				if (result == IDOK) PostQuitMessage(0);
+			}
 
 			SetWindowTextW(forTests, std::to_wstring(p.x).c_str());
 		}
 		break;
 	case WM_RBUTTONUP:
-		POINT p;
+		if (!firstMoveDone) break;
 		GetCursorPos(&p);
 		if (ScreenToClient(hwnd, &p))
 		{

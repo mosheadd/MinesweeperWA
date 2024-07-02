@@ -169,6 +169,25 @@ void mswa::Map::init()
 	}
 }
 
+void mswa::Map::initMines(int x, int y)
+{
+
+	short row = y / 32;
+	short col = x / 32;
+
+	for (short i = 0; i < height; i++)
+	{
+		for (short j = 0; j < width; j++)
+		{
+			if (row != i + 1 || col != j + 1)
+			{
+				int rn = getNumberInRange(1, 100);
+				if (rn < 10) map[i][j] = MINE;
+			}
+		}
+	}
+}
+
 mswa::Map::Size mswa::Map::getSize()
 {
 	Size size = { height, width };
