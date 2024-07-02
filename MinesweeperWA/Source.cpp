@@ -21,6 +21,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 {
 	std::srand(std::time(0));
 	hasGameStarted = false;
+	hasGameEnded = false;
 	firstMoveDone = false;
 
 	Gdiplus::GdiplusStartupInput gdiStartIn;
@@ -124,7 +125,6 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
 
-
 		if (hasGameStarted)
 		{
 
@@ -137,37 +137,58 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 					short minescount = 0;
 					std::wstring wstrMinescount;
 
-					switch (cell)
+					if (!hasGameEnded)
 					{
-					case mswa::Map::UNCOVERED:
-						minescount = map.getMinesCount(i, j);
-						if (!minescount)
+						switch (cell)
 						{
-							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\uncovered.jpg", hdc, j * 32, i * 32);
-						}
+						case mswa::Map::UNCOVERED:
+							minescount = map.getMinesCount(i, j);
+							if (!minescount)
+							{
+								drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\uncovered.jpg", hdc, j * 32, i * 32);
+							}
+							else
+							{
+								wstrMinescount = L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\" + std::to_wstring(minescount) + L".jpg";
+								drawImage(wstrMinescount.c_str(), hdc, j * 32, i * 32);
+							}
+							break;
+						case mswa::Map::FLAGGED:
+							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
+							break;
+						case mswa::Map::FLAGGED_MINE:
+							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
+							break;
+						default:
+							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
+						};
+					}
+					else
+					{
+						if(cell == mswa::Map::MINE || cell == mswa::Map::FLAGGED_MINE)
+							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\mine.jpg", hdc, j * 32, i * 32);
 						else
 						{
-							wstrMinescount = L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\" + std::to_wstring(minescount) + L".jpg";
-							drawImage(wstrMinescount.c_str(), hdc, j * 32, i * 32);
+							minescount = map.getMinesCount(i, j);
+							if (!minescount)
+							{
+								drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\uncovered.jpg", hdc, j * 32, i * 32);
+							}
+							else
+							{
+								wstrMinescount = L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\" + std::to_wstring(minescount) + L".jpg";
+								drawImage(wstrMinescount.c_str(), hdc, j * 32, i * 32);
+							}
 						}
-						break;
-					case mswa::Map::FLAGGED:
-						drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
-						break;
-					case mswa::Map::FLAGGED_MINE:
-						drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
-						break;
-					default:
-						drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
-					};
-
+					}
 				}
 			}
 		}
+
 		EndPaint(hwnd, &ps);
 		break;
 	case WM_LBUTTONUP:
-		if (hasGameStarted)
+		if (hasGameStarted && !hasGameEnded)
 		{
 			GetCursorPos(&p);
 			if (ScreenToClient(hwnd, &p))
@@ -182,14 +203,13 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 				if (!map.action(p.x, p.y))
 				{
 					MessageBox(hwnd, L"You lost!", L"Game lost", MB_ICONEXCLAMATION | MB_OK);
-					PostQuitMessage(0);
+					hasGameEnded = true;
 				}
-
 
 				if (map.checkWinCondition())
 				{
 					MessageBox(hwnd, L"You won!", L"Game won", MB_ICONEXCLAMATION | MB_OK);
-					PostQuitMessage(0);
+					hasGameEnded = true;
 				}
 
 				InvalidateRect(hwnd, NULL, FALSE);
@@ -198,7 +218,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		}
 		break;
 	case WM_RBUTTONUP:
-		if (!firstMoveDone) break;
+		if (!firstMoveDone || hasGameEnded) break;
 		GetCursorPos(&p);
 		if (ScreenToClient(hwnd, &p))
 		{

@@ -31,6 +31,7 @@ HWND forTests;
 
 //Conditions
 bool hasGameStarted;
+bool hasGameEnded;
 bool firstMoveDone;
 
 //Functions 

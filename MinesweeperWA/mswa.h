@@ -2,12 +2,6 @@
 #include <Windows.h>
 #include <vector>
 
-#define Start 1
-#define Exit 2
-#define Settings 3
-#define YES IDYES
-#define NO IDNO
-
 namespace mswa
 {
 	constexpr auto UNCOVER = 1;
