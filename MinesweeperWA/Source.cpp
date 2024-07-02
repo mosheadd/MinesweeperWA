@@ -1,3 +1,4 @@
+#include "iostream"
 #include <Windows.h>
 #include <Winuser.h>
 #include <gdiplus.h>
@@ -18,7 +19,7 @@ enum MainWindowParams {
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdshow)
 {
-
+	std::srand(std::time(0));
 	hasGameStarted = false;
 	firstMoveDone = false;
 
@@ -65,8 +66,8 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 {
 	int result = 0;
 
-	short mapHeight;
-	short mapWidth;
+	short mapHeight = map.getSize().height;
+	short mapWidth = map.getSize().width;
 
 	HDC hdc;
 	PAINTSTRUCT ps;
@@ -94,15 +95,16 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
-		mapHeight = map.getSize().height;
-		mapWidth = map.getSize().width;
+
 		for (int i = 0; i < mapHeight; i++)
 		{
 			for (int j = 0; j < mapWidth; j++)
 			{
 				short cell = map.getCell(i, j);
-				short minescount=0;
+
+				short minescount = 0;
 				std::wstring wstrMinescount;
+
 				switch(cell)
 				{
 				case mswa::Map::UNCOVERED:
@@ -123,18 +125,21 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 				case mswa::Map::FLAGGED_MINE:
 					drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
 					break;
-				default: drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
+				default:
+					drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
 				};
+
 			}
 		}
 		EndPaint(hwnd, &ps);
 		break;
 	case WM_LBUTTONUP:
+
 		GetCursorPos(&p);
 		if (ScreenToClient(hwnd, &p))
 		{
 
-			if (!firstMoveDone)
+			if (!firstMoveDone && p.x <= 32 * mapWidth && p.y <= 32 * mapHeight)
 			{
 				firstMoveDone = true;
 				map.initMines(p.x, p.y);
@@ -146,14 +151,17 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 				PostQuitMessage(0);
 			}
 
+
 			if (map.checkWinCondition())
 			{
 				MessageBox(hwnd, L"You won!", L"Game won", MB_ICONEXCLAMATION | MB_OK);
 				PostQuitMessage(0);
 			}
 
-			SetWindowTextW(forTests, std::to_wstring(p.x).c_str());
+			InvalidateRect(hwnd, NULL, FALSE);
+
 		}
+
 		break;
 	case WM_RBUTTONUP:
 		if (!firstMoveDone) break;
@@ -163,8 +171,10 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 
 			map.action(p.x, p.y, true);
 
-			SetWindowTextW(forTests, std::to_wstring(p.x).c_str());
 		}
+
+		InvalidateRect(hwnd, NULL, FALSE);
+
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -186,7 +196,7 @@ void AddMainWindowWidgets(HWND hwnd)
 	StartGame = CreateWindowA("button", "Start", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Start, NULL, NULL);
 	GameSettings = CreateWindowA("button", "Settings", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 8, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Settings, NULL, NULL);
 	ExitGame = CreateWindowA("button", "Exit", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 2, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Exit, NULL, NULL);
-	forTests = CreateWindowA("static", "a", WS_CHILD | WS_VISIBLE, WIDTH - 55, HEIGHT - 60, 25, 20, hwnd, NULL, NULL, NULL);
+	forTests = CreateWindowA("static", "a", WS_CHILD | WS_VISIBLE, 330, 330, 200, 200, hwnd, NULL, NULL, NULL);
 
 }
 

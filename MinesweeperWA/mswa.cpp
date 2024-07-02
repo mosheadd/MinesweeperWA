@@ -89,8 +89,8 @@ short mswa::Map::getMinesCount(short row, short col)
 	}
 	else
 	{
-		short coeff1 = (row == 0) - (row == height - 1);
-		short coeff2 = (col == 0) - (col == width - 1);
+		short coeff1 = (row == 0) - (row == (height - 1));
+		short coeff2 = (col == 0) - (col == (width - 1));
 		mines_count += (map[row + coeff1][col + coeff2] == MINE) + (map[row][col + coeff2] == MINE) + (map[row + coeff1][col] == MINE);
 		mines_count += (map[row + coeff1][col + coeff2] == FLAGGED_MINE) + (map[row][col + coeff2] == FLAGGED_MINE) + (map[row + coeff1][col] == FLAGGED_MINE);
 	}
@@ -167,6 +167,7 @@ void mswa::Map::init()
 		for (short j = 0; j < width; j++)
 			map[i].push_back(COVERED);
 	}
+
 }
 
 void mswa::Map::initMines(int x, int y)
@@ -182,7 +183,8 @@ void mswa::Map::initMines(int x, int y)
 			if (row != i || col != j)
 			{
 				int rn = getNumberInRange(1, 100);
-				if (rn < 10) map[i][j] = MINE;
+				if (rn < 10)
+					map[i][j] = MINE;
 			}
 		}
 	}

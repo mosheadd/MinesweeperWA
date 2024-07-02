@@ -18,6 +18,7 @@ HWND GameSettings;
 HWND forTests;
 
 bool hasGameStarted;
+bool firstMoveDone;
 
 LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
