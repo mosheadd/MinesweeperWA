@@ -179,7 +179,7 @@ void mswa::Map::initMines(int x, int y)
 	{
 		for (short j = 0; j < width; j++)
 		{
-			if (row != i + 1 || col != j + 1)
+			if (row != i || col != j)
 			{
 				int rn = getNumberInRange(1, 100);
 				if (rn < 10) map[i][j] = MINE;
