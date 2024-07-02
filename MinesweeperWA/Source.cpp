@@ -99,8 +99,28 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			for (int j = 0; j < mapWidth; j++)
 			{
 				short cell = map.getCell(i, j);
+				short minescount=0;
+				std::wstring wstrMinescount;
 				switch(cell)
 				{
+				case mswa::Map::UNCOVERED:
+					minescount = map.getMinesCount(i, j);
+					if (!minescount)
+					{
+						drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\uncovered.jpg", hdc, j * 32, i * 32);
+					}
+					else
+					{
+						wstrMinescount = L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\" + std::to_wstring(minescount) + L".jpg";
+						drawImage(wstrMinescount.c_str(), hdc, j * 32, i * 32);
+					}
+					break;
+				case mswa::Map::FLAGGED:
+					drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
+					break;
+				case mswa::Map::FLAGGED_MINE:
+					drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
+					break;
 				default: drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
 				};
 			}

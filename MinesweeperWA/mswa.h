@@ -20,15 +20,6 @@ namespace mswa
 	{
 		std::vector<std::vector<short>> map;
 		short height, width;
-
-		enum
-		{
-			COVERED = 0,
-			UNCOVERED = 1,
-			FLAGGED = 2,
-			MINE = 3,
-			FLAGGED_MINE = 4,
-		};
 		
 		void init();
 
@@ -39,6 +30,16 @@ namespace mswa
 		};
 
 	public:
+
+		enum
+		{
+			COVERED = 0,
+			UNCOVERED = 1,
+			FLAGGED = 2,
+			MINE = 3,
+			FLAGGED_MINE = 4,
+		};
+
 		Map();
 		Map(short height, short width);
 
