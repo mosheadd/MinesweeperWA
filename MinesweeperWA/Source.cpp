@@ -142,8 +142,14 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 
 			if (!map.action(p.x, p.y))
 			{
-				result = MessageBox(hwnd, L"You lost", L"Game lost", MB_OK);
-				if (result == IDOK) PostQuitMessage(0);
+				MessageBox(hwnd, L"You lost!", L"Game lost", MB_ICONEXCLAMATION | MB_OK);
+				PostQuitMessage(0);
+			}
+
+			if (map.checkWinCondition())
+			{
+				MessageBox(hwnd, L"You won!", L"Game won", MB_ICONEXCLAMATION | MB_OK);
+				PostQuitMessage(0);
 			}
 
 			SetWindowTextW(forTests, std::to_wstring(p.x).c_str());
