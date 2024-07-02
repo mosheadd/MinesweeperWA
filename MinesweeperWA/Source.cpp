@@ -91,18 +91,24 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			HideDifficultiesWidgets();
 			InvalidateRect(hwnd, NULL, FALSE);
 			hasGameStarted = true;
+			SetWindowPos(ExitGame, NULL, WIDTH * 3 / 8, 3 * HEIGHT / 4, NULL, NULL, SWP_NOSIZE);
+			ShowWindow(ExitGame, SW_SHOW);
 			break;
 		case ChooseMedium:
 			map = mswa::Map(10, 10);
 			HideDifficultiesWidgets();
 			InvalidateRect(hwnd, NULL, FALSE);
 			hasGameStarted = true;
+			SetWindowPos(ExitGame, NULL, WIDTH * 3 / 8, 3 * HEIGHT / 4, NULL, NULL, SWP_NOSIZE);
+			ShowWindow(ExitGame, SW_SHOW);
 			break;
 		case ChooseHard:
 			map = mswa::Map(15, 15);
 			HideDifficultiesWidgets();
 			InvalidateRect(hwnd, NULL, FALSE);
 			hasGameStarted = true;
+			SetWindowPos(ExitGame, NULL, WIDTH * 3 / 8, 3 * HEIGHT / 4, NULL, NULL, SWP_NOSIZE);
+			ShowWindow(ExitGame, SW_SHOW);
 			break;
 		case Exit:
 			result = MessageBox(hwnd, L"Are you sure you want to exit the game?", L"Exit", MB_YESNO);
