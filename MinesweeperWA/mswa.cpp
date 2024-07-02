@@ -67,7 +67,7 @@ short mswa::Map::getMinesCount(short row, short col)
 		}
 		else
 		{
-			for (int t = 8; t < 10; t++)
+			for (int t = height - 2; t < height; t++)
 				for (int k = col - 1; k < col + 2; k++)
 					mines_count += map[t][k] == MINE || map[t][k] == FLAGGED_MINE;
 		}
@@ -83,7 +83,7 @@ short mswa::Map::getMinesCount(short row, short col)
 		else
 		{
 			for (int t = row - 1; t < row + 2; t++)
-				for (int k = 8; k < 10; k++)
+				for (int k = width - 2; k < width; k++)
 					mines_count += map[t][k] == MINE || map[t][k] == FLAGGED_MINE;
 		}
 	}
