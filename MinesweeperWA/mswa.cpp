@@ -116,17 +116,19 @@ bool mswa::Map::action(int x, int y, bool toflag)
 	{
 		switch (map[row][col])
 		{
-		case UNCOVERED:
+		case COVERED:
 			map[row][col] = FLAGGED;
 			break;
 		case FLAGGED:
-			map[row][col] = UNCOVERED;
+			map[row][col] = COVERED;
 			break;
 		case MINE:
 			map[row][col] = FLAGGED_MINE;
 			break;
 		case FLAGGED_MINE:
 			map[row][col] = MINE;
+			break;
+		default:
 			break;
 		}
 	}
