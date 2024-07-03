@@ -1,0 +1,11 @@
+btnStart:Начать;
+btnSettings:Настройки;
+btnExit:Выйти;
+btnBack:Назад;
+btnEasy:Легко;
+btnMedium:Средне;
+btnHard:Сложно;
+msgLoseTitle:Поражение;
+msgLoseText:Вы проиграли!;
+msgWinTitle:Победа;
+msgWinText:Вы выиграли!;

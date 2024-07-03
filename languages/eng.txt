@@ -1,0 +1,11 @@
+btnStart:Start;
+btnSettings:Settings;
+btnExit:Exit;
+btnBack:Back;
+btnEasy:Easy;
+btnMedium:Medium;
+btnHard:Hard;
+msgLoseTitle:Game lost;
+msgLoseText:You lost!;
+msgWinTitle:Game won;
+msgWinText:You won;
