@@ -3,12 +3,13 @@
 #include <Winuser.h>
 #include <gdiplus.h>
 #include <string>
+#include <fstream>
 
 #include "MainClassPrototypes.h"
 #include "mswa.h"
 #pragma comment(lib,"gdiplus.lib")
 
-mswa::Map map;
+mswa::Map gamemap;
 
 enum MainWindowParams {
 	X = 630,
@@ -67,8 +68,8 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 {
 	int result = 0;
 
-	short mapHeight = map.getSize().height;
-	short mapWidth = map.getSize().width;
+	short mapHeight = gamemap.getSize().height;
+	short mapWidth = gamemap.getSize().width;
 
 	HDC hdc;
 	PAINTSTRUCT ps;
@@ -83,12 +84,15 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			HideMainMenuWidgets();
 			ShowDifficultiesWidgets();
 			break;
+		case Settings:
+			
+			break;
 		case Back:
 			ShowMainMenuWidgets();
 			HideDifficultiesWidgets();
 			break;
 		case ChooseEasy:
-			map = mswa::Map(5, 5);
+			gamemap = mswa::Map(5, 5);
 			HideDifficultiesWidgets();
 			InvalidateRect(hwnd, NULL, FALSE);
 			hasGameStarted = true;
@@ -96,7 +100,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			ShowWindow(ExitGame, SW_SHOW);
 			break;
 		case ChooseMedium:
-			map = mswa::Map(10, 10);
+			gamemap = mswa::Map(10, 10);
 			HideDifficultiesWidgets();
 			InvalidateRect(hwnd, NULL, FALSE);
 			hasGameStarted = true;
@@ -104,7 +108,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			ShowWindow(ExitGame, SW_SHOW);
 			break;
 		case ChooseHard:
-			map = mswa::Map(15, 15);
+			gamemap = mswa::Map(15, 15);
 			HideDifficultiesWidgets();
 			InvalidateRect(hwnd, NULL, FALSE);
 			hasGameStarted = true;
@@ -132,7 +136,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			{
 				for (int j = 0; j < mapWidth; j++)
 				{
-					short cell = map.getCell(i, j);
+					short cell = gamemap.getCell(i, j);
 
 					short minescount = 0;
 					std::wstring wstrMinescount;
@@ -142,42 +146,42 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 						switch (cell)
 						{
 						case mswa::Map::UNCOVERED:
-							minescount = map.getMinesCount(i, j);
+							minescount = gamemap.getMinesCount(i, j);
 							if (!minescount)
 							{
-								drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\uncovered.jpg", hdc, j * 32, i * 32);
+								drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\uncovered.jpg", hdc, j * 32 + (WIDTH - mapWidth * 32) / 2, i * 32);
 							}
 							else
 							{
 								wstrMinescount = L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\" + std::to_wstring(minescount) + L".jpg";
-								drawImage(wstrMinescount.c_str(), hdc, j * 32, i * 32);
+								drawImage(wstrMinescount.c_str(), hdc, j * 32 + (WIDTH - mapWidth * 32) / 2, i * 32);
 							}
 							break;
 						case mswa::Map::FLAGGED:
-							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
+							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32 + (WIDTH - mapWidth * 32) / 2, i * 32);
 							break;
 						case mswa::Map::FLAGGED_MINE:
-							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32, i * 32);
+							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\flag.jpg", hdc, j * 32 + (WIDTH - mapWidth * 32) / 2, i * 32);
 							break;
 						default:
-							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32, i * 32);
+							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\covered.jpg", hdc, j * 32 + (WIDTH - mapWidth * 32) / 2, i * 32);
 						};
 					}
 					else
 					{
 						if(cell == mswa::Map::MINE || cell == mswa::Map::FLAGGED_MINE)
-							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\mine.jpg", hdc, j * 32, i * 32);
+							drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\mine.jpg", hdc, j * 32 + (WIDTH - mapWidth * 32) / 2, i * 32);
 						else
 						{
-							minescount = map.getMinesCount(i, j);
+							minescount = gamemap.getMinesCount(i, j);
 							if (!minescount)
 							{
-								drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\uncovered.jpg", hdc, j * 32, i * 32);
+								drawImage(L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\uncovered.jpg", hdc, j * 32 + (WIDTH - mapWidth * 32) / 2, i * 32);
 							}
 							else
 							{
 								wstrMinescount = L"C:\\Users\\rost1\\source\\repos\\MinesweeperWA\\images\\" + std::to_wstring(minescount) + L".jpg";
-								drawImage(wstrMinescount.c_str(), hdc, j * 32, i * 32);
+								drawImage(wstrMinescount.c_str(), hdc, j * 32 + (WIDTH - mapWidth * 32) / 2, i * 32);
 							}
 						}
 					}
@@ -194,19 +198,19 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			if (ScreenToClient(hwnd, &p))
 			{
 
-				if (!firstMoveDone && p.x <= 32 * mapWidth && p.y <= 32 * mapHeight)
+				if (!firstMoveDone && p.x >= (WIDTH - mapWidth * 32) / 2 && p.x <= (WIDTH + mapWidth * 32) / 2 && p.y <= 32 * mapHeight)
 				{
 					firstMoveDone = true;
-					map.initMines(p.x, p.y);
+					gamemap.initMines(p.x - (WIDTH - mapWidth * 32) / 2, p.y);
 				}
 
-				if (!map.action(p.x, p.y))
+				if (!gamemap.action(p.x - (WIDTH - mapWidth * 32) / 2, p.y))
 				{
 					MessageBox(hwnd, L"You lost!", L"Game lost", MB_ICONEXCLAMATION | MB_OK);
 					hasGameEnded = true;
 				}
 
-				if (map.checkWinCondition())
+				if (gamemap.checkWinCondition())
 				{
 					MessageBox(hwnd, L"You won!", L"Game won", MB_ICONEXCLAMATION | MB_OK);
 					hasGameEnded = true;
@@ -223,7 +227,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		if (ScreenToClient(hwnd, &p))
 		{
 
-			map.action(p.x, p.y, true);
+			gamemap.action(p.x - (WIDTH - mapWidth * 32) / 2, p.y, true);
 
 		}
 
@@ -257,7 +261,7 @@ void AddMainWindowWidgets(HWND hwnd)
 
 	BackButton = CreateWindowA("button", "Back", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Back, NULL, NULL);
 
-	forTests = CreateWindowA("static", "", WS_CHILD, 640, 640, 1, 1, hwnd, NULL, NULL, NULL);
+	forTests = CreateWindowA("static", "", WS_CHILD, 0, 0, 300, 300, hwnd, NULL, NULL, NULL);
 
 }
 
@@ -300,4 +304,3 @@ void drawImage(LPCWSTR filepath, HDC hdc, INT x, INT y)
 	graphics.DrawImage(&img, x, y);
 
 }
-

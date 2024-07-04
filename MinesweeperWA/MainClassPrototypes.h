@@ -3,6 +3,8 @@
 #include <gdiplus.h>
 
 //Definitions
+
+//Handlers
 #define Start 1
 #define Exit 2
 #define Settings 3
@@ -10,6 +12,8 @@
 #define ChooseMedium 5
 #define ChooseHard 6
 #define Back 7
+
+//Others
 #define YES IDYES
 #define NO IDNO
 
