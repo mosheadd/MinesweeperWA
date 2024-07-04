@@ -172,13 +172,23 @@ void mswa::Map::init()
 
 }
 
+void mswa::Map::reinit()
+{
+	for (short i = 0; i < height; i++)
+	{
+		for (short j = 0; j < width; j++)
+			map[i][j] = COVERED;
+	}
+
+}
+
 void mswa::Map::initMines(int x, int y)
 {
 
 	short row = y / 32;
 	short col = x / 32;
 
-	short totalMinesOnMap = getNumberInRange(height * width / 5, 3 * height * width / 5);
+	short totalMinesOnMap = getNumberInRange(3 * height * width / 20, 3 * height * width / 10);
 	short mineRow = row;
 	short mineCol = col;
 

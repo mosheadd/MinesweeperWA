@@ -41,6 +41,7 @@ namespace mswa
 
 		void makeRoad(short row, short col);
 		void initMines(int x, int y);
+		void reinit();
 
 		short getMinesCount(short row, short col);
 		short getCell(short row, short col);
