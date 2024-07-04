@@ -206,14 +206,26 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 
 				if (!gamemap.action(p.x - (WIDTH - mapWidth * 32) / 2, p.y))
 				{
-					MessageBox(hwnd, L"You lost!", L"Game lost", MB_ICONEXCLAMATION | MB_OK);
-					hasGameEnded = true;
+					result = MessageBox(hwnd, L"You lost! Try again?", L"Game lost", MB_ICONEXCLAMATION | MB_YESNO);
+					if(result == NO)
+						hasGameEnded = true;
+					else
+					{
+						gamemap.reinit();
+						firstMoveDone = false;
+					}
 				}
 
 				if (gamemap.checkWinCondition())
 				{
-					MessageBox(hwnd, L"You won!", L"Game won", MB_ICONEXCLAMATION | MB_OK);
-					hasGameEnded = true;
+					result = MessageBox(hwnd, L"You won! Play again?", L"Game won", MB_ICONEXCLAMATION | MB_YESNO);
+					if (result == NO)
+						hasGameEnded = true;
+					else
+					{
+						gamemap.reinit();
+						firstMoveDone = false;
+					}
 				}
 
 				InvalidateRect(hwnd, NULL, FALSE);
