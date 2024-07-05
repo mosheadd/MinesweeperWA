@@ -41,8 +41,10 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 
 	while (GetMessage(&MainMessage, NULL, NULL, NULL))
 	{
+
 		TranslateMessage(&MainMessage);
 		DispatchMessageW(&MainMessage);
+	
 	}
 
 	Gdiplus::GdiplusShutdown(gdiToken);
@@ -67,6 +69,7 @@ WNDCLASS CreateWindowClass(HBRUSH color, HCURSOR cursor, HINSTANCE hInst, HICON 
 LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	int result = 0;
+	int duration;
 
 	short mapHeight = gamemap.getSize().height;
 	short mapWidth = gamemap.getSize().width;
@@ -92,32 +95,33 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			HideDifficultiesWidgets();
 			break;
 		case ChooseEasy:
-			gamemap = mswa::Map(5, 5);
-			HideDifficultiesWidgets();
-			InvalidateRect(hwnd, NULL, FALSE);
-			hasGameStarted = true;
-			SetWindowPos(ExitGame, NULL, WIDTH * 3 / 8, 3 * HEIGHT / 4, NULL, NULL, SWP_NOSIZE);
-			ShowWindow(ExitGame, SW_SHOW);
+			initGame(5, 5, hwnd);
 			break;
 		case ChooseMedium:
-			gamemap = mswa::Map(10, 10);
-			HideDifficultiesWidgets();
-			InvalidateRect(hwnd, NULL, FALSE);
-			hasGameStarted = true;
-			SetWindowPos(ExitGame, NULL, WIDTH * 3 / 8, 3 * HEIGHT / 4, NULL, NULL, SWP_NOSIZE);
-			ShowWindow(ExitGame, SW_SHOW);
+			initGame(10, 10, hwnd);
 			break;
 		case ChooseHard:
-			gamemap = mswa::Map(15, 15);
-			HideDifficultiesWidgets();
-			InvalidateRect(hwnd, NULL, FALSE);
-			hasGameStarted = true;
-			SetWindowPos(ExitGame, NULL, WIDTH * 3 / 8, 3 * HEIGHT / 4, NULL, NULL, SWP_NOSIZE);
-			ShowWindow(ExitGame, SW_SHOW);
+			initGame(15, 15, hwnd);
 			break;
 		case Exit:
 			result = MessageBox(hwnd, L"Are you sure you want to exit the game?", L"Exit", MB_YESNO);
-			if (result == YES) PostQuitMessage(0);
+			if (result == YES)
+			{
+				if(hasGameStarted) KillTimer(hwnd, TIMER1);
+				PostQuitMessage(0);
+			}
+			break;
+		}
+		break;
+	case WM_TIMER:
+		switch (wparam)
+		{
+		case TIMER1:
+			if (hasGameStarted)
+			{
+				duration = (clock() - clockStart) / CLOCKS_PER_SEC;
+				SetWindowText(Time, std::to_wstring(duration + 1).c_str());
+			}
 			break;
 		}
 		break;
@@ -125,6 +129,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		AddMainWindowMenu(hwnd);
 		AddMainWindowWidgets(hwnd);
 		ShowMainMenuWidgets();
+		
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
@@ -247,6 +252,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 
 		break;
 	case WM_DESTROY:
+		if (hasGameStarted) KillTimer(hwnd, TIMER1);
 		PostQuitMessage(0);
 		break;
 	default:
@@ -272,6 +278,9 @@ void AddMainWindowWidgets(HWND hwnd)
 	Hard = CreateWindowA("button", "Hard", WS_CHILD, WIDTH * 3 / 8, HEIGHT / 2, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)ChooseHard, NULL, NULL);
 
 	BackButton = CreateWindowA("button", "Back", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Back, NULL, NULL);
+
+	Time = CreateWindowA("static", "", WS_CHILD, 0, 0, 40, 25, hwnd, NULL, NULL, NULL);
+	Flags = CreateWindowA("static", "Flags", WS_CHILD, 595, 0, 40, 25, hwnd, NULL, NULL, NULL);
 
 	forTests = CreateWindowA("static", "", WS_CHILD, 0, 0, 300, 300, hwnd, NULL, NULL, NULL);
 
@@ -315,4 +324,18 @@ void drawImage(LPCWSTR filepath, HDC hdc, INT x, INT y)
 	Gdiplus::Bitmap img(filepath);
 	graphics.DrawImage(&img, x, y);
 
+}
+
+void initGame(short width, short height, HWND hwnd)
+{
+	gamemap = mswa::Map(width, height);
+	HideDifficultiesWidgets();
+	InvalidateRect(hwnd, NULL, FALSE);
+	hasGameStarted = true;
+	SetWindowPos(ExitGame, NULL, WIDTH * 3 / 8, 3 * HEIGHT / 4, NULL, NULL, SWP_NOSIZE);
+	ShowWindow(ExitGame, SW_SHOW);
+	ShowWindow(Time, SW_SHOW);
+	ShowWindow(Flags, SW_SHOW);
+	clockStart = clock();
+	nTimerID = SetTimer(hwnd, TIMER1, 1000, NULL);
 }
