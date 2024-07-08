@@ -13,7 +13,7 @@ namespace mswa
 	class Map
 	{
 		std::vector<std::vector<short>> map;
-		short height, width;
+		short height, width, flags;
 		
 		void init();
 
@@ -45,6 +45,7 @@ namespace mswa
 
 		short getMinesCount(short row, short col);
 		short getCell(short row, short col);
+		short getFlagsCount();
 
 		bool action(int x, int y, bool toflag = false);
 		bool checkWinCondition();

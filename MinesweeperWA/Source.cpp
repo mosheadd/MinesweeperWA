@@ -117,7 +117,7 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		switch (wparam)
 		{
 		case TIMER1:
-			if (hasGameStarted)
+			if (hasGameStarted && !hasGameEnded)
 			{
 				duration = (clock() - clockStart) / CLOCKS_PER_SEC;
 				SetWindowText(Time, std::to_wstring(duration + 1).c_str());
@@ -245,6 +245,8 @@ LRESULT CALLBACK MainClassProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		{
 
 			gamemap.action(p.x - (WIDTH - mapWidth * 32) / 2, p.y, true);
+			if (firstMoveDone)
+				SetWindowText(Flags, std::to_wstring(gamemap.getFlagsCount()).c_str());
 
 		}
 
@@ -280,7 +282,7 @@ void AddMainWindowWidgets(HWND hwnd)
 	BackButton = CreateWindowA("button", "Back", WS_CHILD, WIDTH * 3 / 8, 3 * HEIGHT / 4, WIDTH / 4, HEIGHT / 8, hwnd, (HMENU)Back, NULL, NULL);
 
 	Time = CreateWindowA("static", "", WS_CHILD, 0, 0, 40, 25, hwnd, NULL, NULL, NULL);
-	Flags = CreateWindowA("static", "Flags", WS_CHILD, 595, 0, 40, 25, hwnd, NULL, NULL, NULL);
+	Flags = CreateWindowA("static", "", WS_CHILD, 595, 0, 40, 25, hwnd, NULL, NULL, NULL);
 
 	forTests = CreateWindowA("static", "", WS_CHILD, 0, 0, 300, 300, hwnd, NULL, NULL, NULL);
 

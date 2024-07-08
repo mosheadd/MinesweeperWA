@@ -104,6 +104,11 @@ short mswa::Map::getCell(short row, short col)
 	return map[row][col];
 }
 
+short mswa::Map::getFlagsCount()
+{
+	return flags;
+}
+
 bool mswa::Map::action(int x, int y, bool toflag)
 {
 
@@ -117,16 +122,26 @@ bool mswa::Map::action(int x, int y, bool toflag)
 		switch (map[row][col])
 		{
 		case COVERED:
-			map[row][col] = FLAGGED;
+			if (flags > 0)
+			{
+				map[row][col] = FLAGGED;
+				flags--;
+			}
 			break;
 		case FLAGGED:
 			map[row][col] = COVERED;
+			flags++;
 			break;
 		case MINE:
-			map[row][col] = FLAGGED_MINE;
+			if (flags > 0)
+			{
+				map[row][col] = FLAGGED_MINE;
+				flags--;
+			}
 			break;
 		case FLAGGED_MINE:
 			map[row][col] = MINE;
+			flags++;
 			break;
 		default:
 			break;
@@ -201,6 +216,8 @@ void mswa::Map::initMines(int x, int y)
 		}
 		map[mineRow][mineCol] = MINE;
 	}
+
+	flags = totalMinesOnMap;
 
 }
 
